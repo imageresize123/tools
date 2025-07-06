@@ -1,0 +1,1681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Free online tools to compress, resize, convert images to PDF, and convert Word to PDF. Optimize your files for web with our powerful tools.">
+    <meta name="keywords" content="image compressor, image to PDF, image resizer, word to pdf, optimize images, reduce file size">
+    <meta name="author" content="File Resize Pro">
+    <title>File Tools Pro - Compress, Resize & Convert Files</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.16.0/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.0/mammoth.browser.min.js"></script>
+    <style>
+        :root {
+            --primary-1: #4361ee;
+            --primary-2: #3f37c9;
+            --primary-3: #4895ef;
+            --secondary-1: #7209b7;
+            --secondary-2: #560bad;
+            --accent-1: #4cc9f0;
+            --accent-2: #f72585;
+            --success: #38b000;
+            --warning: #ff9e00;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --border-radius: 10px;
+            --box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --gradient: linear-gradient(135deg, var(--primary-1), var(--primary-2));
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: #f8f9fa;
+            padding-bottom: 50px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: var(--gradient);
+            color: white;
+            padding: 25px 0;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: var(--box-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: "";
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        header::after {
+            content: "";
+            position: absolute;
+            bottom: -80px;
+            left: -30px;
+            width: 250px;
+            height: 250px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .ad-container {
+            background-color: white;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin: 20px auto;
+            text-align: center;
+            box-shadow: var(--box-shadow);
+            max-width: 100%;
+            border: 1px solid #e9ecef;
+        }
+
+        .ad-container.top-ad {
+            margin-bottom: 30px;
+        }
+
+        /* Tab Navigation */
+        .tab-navigation {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tab-btn {
+            padding: 12px 25px;
+            background-color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--dark);
+            transition: var(--transition);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn.active {
+            background-color: var(--primary-1);
+            color: white;
+        }
+
+        .tab-btn i {
+            font-size: 1.2rem;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tool-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            border-top: 5px solid var(--primary-1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-area {
+            border: 2px dashed #ced4da;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            background-color: #f8f9fa;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary-1);
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+
+        .upload-area i {
+            font-size: 48px;
+            color: var(--primary-1);
+            margin-bottom: 15px;
+        }
+
+        .upload-area p {
+            margin-bottom: 10px;
+            color: var(--gray);
+        }
+
+        .upload-area.active {
+            border-color: var(--success);
+            background-color: rgba(56, 176, 0, 0.05);
+        }
+
+        .file-info {
+            display: none;
+            margin-top: 10px;
+            padding: 15px;
+            background-color: #f1f8ff;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--primary-1);
+        }
+
+        .controls {
+            margin-top: 20px;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .slider-container input[type="range"] {
+            flex: 1;
+            height: 8px;
+            border-radius: 4px;
+            background: #e9ecef;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider-container input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary-1);
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .slider-value {
+            min-width: 50px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--primary-1);
+            background: #f1f8ff;
+            padding: 5px 10px;
+            border-radius: 20px;
+        }
+
+        .dimension-controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .dimension-input {
+            flex: 1;
+            position: relative;
+        }
+
+        .dimension-input input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ced4da;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .dimension-input input:focus {
+            border-color: var(--primary-1);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        .dimension-unit {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--primary-1);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        .unit-selector {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .unit-btn {
+            padding: 5px 12px;
+            background: #e9ecef;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .unit-btn.active {
+            background: var(--primary-1);
+            color: white;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary-1);
+        }
+
+        select {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ced4da;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            background-color: white;
+            transition: var(--transition);
+        }
+
+        select:focus {
+            border-color: var(--primary-1);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        button {
+            background-color: var(--primary-1);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        button:hover {
+            background-color: var(--primary-2);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        button:disabled {
+            background-color: #ced4da;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        button i {
+            font-size: 1.2rem;
+        }
+
+        .result-container {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .result-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            border: 1px solid #e9ecef;
+        }
+
+        .result-info div {
+            flex: 1;
+        }
+
+        .result-info h3 {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 5px;
+        }
+
+        .result-info p {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .comparison {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .image-preview {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .image-preview h3 {
+            margin-bottom: 10px;
+            color: var(--gray);
+            font-size: 1rem;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .download-btn {
+            margin-top: 20px;
+            background-color: var(--success);
+        }
+
+        .download-btn:hover {
+            background-color: #2d8a00;
+        }
+
+        .spinner {
+            display: none;
+            width: 40px;
+            height: 40px;
+            margin: 20px auto;
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid var(--primary-1);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 30px;
+            color: var(--gray);
+            font-size: 0.9rem;
+            background-color: white;
+            border-top: 1px solid #e9ecef;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            margin-left: 5px;
+            cursor: help;
+        }
+
+        .tooltip i {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--dark);
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8rem;
+            font-weight: normal;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            header p {
+                font-size: 1rem;
+            }
+            
+            .tab-navigation {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .tab-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .comparison {
+                flex-direction: column;
+            }
+            
+            .dimension-controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>File Tools Pro</h1>
+            <p>Powerful online tools to compress, resize and convert your images and documents with ease</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Top Ad Unit - Replace with your AdSense unit ID -->
+        <div class="ad-container top-ad">
+            <!-- Google AdSense Ad Unit -->
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_PUBLISHER_ID"></script>
+            <!-- FileTools_Top_Banner -->
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-YOUR_PUBLISHER_ID"
+                 data-ad-slot="YOUR_AD_SLOT_ID"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <button class="tab-btn active" data-tab="compress"><i class="fas fa-compress-alt"></i> Compress Image</button>
+            <button class="tab-btn" data-tab="resize"><i class="fas fa-expand-alt"></i> Resize Image</button>
+            <button class="tab-btn" data-tab="image-pdf"><i class="fas fa-file-pdf"></i> Image to PDF</button>
+            <button class="tab-btn" data-tab="word-pdf"><i class="fas fa-file-word"></i> Word to PDF</button>
+        </div>
+
+        <!-- Compress Image Tab -->
+        <div id="compress" class="tab-content active">
+            <div class="tool-card">
+                <div class="upload-area" id="compress-upload-area">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p><strong>Drag & Drop your image here</strong></p>
+                    <p>or click to browse files</p>
+                    <input type="file" id="compress-input" accept="image/*" style="display: none;">
+                </div>
+                <div class="file-info" id="compress-file-info">
+                    <p><strong>File:</strong> <span id="compress-file-name"></span></p>
+                    <p><strong>Size:</strong> <span id="compress-file-size"></span></p>
+                    <p><strong>Dimensions:</strong> <span id="compress-dimensions"></span></p>
+                </div>
+                
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="compress-level">Compression Level <span class="tooltip"><i class="fas fa-info-circle"></i><span class="tooltiptext">Higher values mean better quality but larger file size</span></span></label>
+                        <div class="slider-container">
+                            <input type="range" id="compress-level" min="0" max="100" value="70">
+                            <span class="slider-value" id="compress-value">70%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="compress-format">Output Format</label>
+                        <select id="compress-format">
+                            <option value="auto">Auto (Same as input)</option>
+                            <option value="jpeg">JPEG</option>
+                            <option value="png">PNG</option>
+                            <option value="webp">WebP</option>
+                        </select>
+                    </div>
+                    
+                    <button id="compress-btn" disabled><i class="fas fa-compress-alt"></i> Compress Image</button>
+                </div>
+                
+                <div class="spinner" id="compress-spinner"></div>
+                
+                <div class="result-container" id="compress-result">
+                    <div class="result-info">
+                        <div>
+                            <h3>Original Size</h3>
+                            <p id="compress-original-size">0 KB</p>
+                        </div>
+                        <div>
+                            <h3>Compressed Size</h3>
+                            <p id="compress-new-size">0 KB</p>
+                        </div>
+                        <div>
+                            <h3>Reduction</h3>
+                            <p id="compress-reduction">0%</p>
+                        </div>
+                    </div>
+                    
+                    <div class="comparison">
+                        <div class="image-preview">
+                            <h3>Original</h3>
+                            <img id="compress-original-img" src="" alt="Original image">
+                        </div>
+                        <div class="image-preview">
+                            <h3>Compressed</h3>
+                            <img id="compress-new-img" src="" alt="Compressed image">
+                        </div>
+                    </div>
+                    
+                    <button class="download-btn" id="compress-download-btn"><i class="fas fa-download"></i> Download Compressed Image</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resize Image Tab -->
+        <div id="resize" class="tab-content">
+            <div class="tool-card">
+                <div class="upload-area" id="resize-upload-area">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p><strong>Drag & Drop your image here</strong></p>
+                    <p>or click to browse files</p>
+                    <input type="file" id="resize-input" accept="image/*" style="display: none;">
+                </div>
+                <div class="file-info" id="resize-file-info">
+                    <p><strong>File:</strong> <span id="resize-file-name"></span></p>
+                    <p><strong>Size:</strong> <span id="resize-file-size"></span></p>
+                    <p><strong>Dimensions:</strong> <span id="resize-dimensions"></span></p>
+                </div>
+                
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="resize-width">Dimensions</label>
+                        <div class="unit-selector">
+                            <button class="unit-btn active" data-unit="px">px</button>
+                            <button class="unit-btn" data-unit="cm">cm</button>
+                            <button class="unit-btn" data-unit="mm">mm</button>
+                            <button class="unit-btn" data-unit="in">in</button>
+                        </div>
+                        <div class="dimension-controls">
+                            <div class="dimension-input">
+                                <input type="number" id="resize-width" placeholder="Width" min="1">
+                                <span class="dimension-unit">px</span>
+                            </div>
+                            <div class="dimension-input">
+                                <input type="number" id="resize-height" placeholder="Height" min="1">
+                                <span class="dimension-unit">px</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="resize-format">Output Format</label>
+                        <select id="resize-format">
+                            <option value="auto">Auto (Same as input)</option>
+                            <option value="jpeg">JPEG</option>
+                            <option value="png">PNG</option>
+                            <option value="webp">WebP</option>
+                        </select>
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="resize-maintain-ratio" checked>
+                        <label for="resize-maintain-ratio">Maintain Aspect Ratio</label>
+                    </div>
+                    
+                    <button id="resize-btn" disabled><i class="fas fa-expand-alt"></i> Resize Image</button>
+                </div>
+                
+                <div class="spinner" id="resize-spinner"></div>
+                
+                <div class="result-container" id="resize-result">
+                    <div class="result-info">
+                        <div>
+                            <h3>Original Size</h3>
+                            <p id="resize-original-size">0 KB</p>
+                        </div>
+                        <div>
+                            <h3>Resized Size</h3>
+                            <p id="resize-new-size">0 KB</p>
+                        </div>
+                        <div>
+                            <h3>New Dimensions</h3>
+                            <p id="resize-new-dimensions">0 × 0 px</p>
+                        </div>
+                    </div>
+                    
+                    <div class="comparison">
+                        <div class="image-preview">
+                            <h3>Original</h3>
+                            <img id="resize-original-img" src="" alt="Original image">
+                        </div>
+                        <div class="image-preview">
+                            <h3>Resized</h3>
+                            <img id="resize-new-img" src="" alt="Resized image">
+                        </div>
+                    </div>
+                    
+                    <button class="download-btn" id="resize-download-btn"><i class="fas fa-download"></i> Download Resized Image</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Image to PDF Tab -->
+        <div id="image-pdf" class="tab-content">
+            <div class="tool-card">
+                <div class="upload-area" id="pdf-upload-area">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p><strong>Drag & Drop your images here</strong></p>
+                    <p>or click to browse files</p>
+                    <input type="file" id="pdf-input" accept="image/*" style="display: none;" multiple>
+                </div>
+                <div class="file-info" id="pdf-file-info">
+                    <p><strong>Selected Files:</strong> <span id="pdf-file-count">0</span></p>
+                    <p><strong>Total Size:</strong> <span id="pdf-total-size">0 KB</span></p>
+                </div>
+                
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="pdf-page-size">Page Size</label>
+                        <select id="pdf-page-size">
+                            <option value="a4">A4 (210 × 297 mm)</option>
+                            <option value="letter">Letter (216 × 279 mm)</option>
+                            <option value="legal">Legal (216 × 356 mm)</option>
+                            <option value="auto">Auto (Fit to image)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="pdf-orientation">Orientation</label>
+                        <select id="pdf-orientation">
+                            <option value="portrait">Portrait</option>
+                            <option value="landscape">Landscape</option>
+                            <option value="auto">Auto (Based on image)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="pdf-margin" checked>
+                        <label for="pdf-margin">Add Margins</label>
+                    </div>
+                    
+                    <button id="pdf-btn" disabled><i class="fas fa-file-pdf"></i> Convert to PDF</button>
+                </div>
+                
+                <div class="spinner" id="pdf-spinner"></div>
+                
+                <div class="result-container" id="pdf-result">
+                    <div class="result-info">
+                        <div>
+                            <h3>Total Images</h3>
+                            <p id="pdf-image-count">0</p>
+                        </div>
+                        <div>
+                            <h3>PDF Pages</h3>
+                            <p id="pdf-page-count">0</p>
+                        </div>
+                        <div>
+                            <h3>PDF Size</h3>
+                            <p id="pdf-output-size">0 KB</p>
+                        </div>
+                    </div>
+                    
+                    <div class="image-preview">
+                        <h3>First Image Preview</h3>
+                        <img id="pdf-preview-img" src="" alt="First image preview">
+                    </div>
+                    
+                    <button class="download-btn" id="pdf-download-btn"><i class="fas fa-download"></i> Download PDF</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Word to PDF Tab -->
+        <div id="word-pdf" class="tab-content">
+            <div class="tool-card">
+                <div class="upload-area" id="word-upload-area">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p><strong>Drag & Drop your Word file here</strong></p>
+                    <p>or click to browse files</p>
+                    <input type="file" id="word-input" accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="display: none;">
+                </div>
+                <div class="file-info" id="word-file-info">
+                    <p><strong>File:</strong> <span id="word-file-name"></span></p>
+                    <p><strong>Size:</strong> <span id="word-file-size"></span></p>
+                </div>
+                
+                <button id="word-btn" disabled><i class="fas fa-file-pdf"></i> Convert to PDF</button>
+                
+                <div class="spinner" id="word-spinner"></div>
+                
+                <div class="result-container" id="word-result">
+                    <div class="result-info">
+                        <div>
+                            <h3>Original Size</h3>
+                            <p id="word-original-size">0 KB</p>
+                        </div>
+                        <div>
+                            <h3>PDF Size</h3>
+                            <p id="word-pdf-size">0 KB</p>
+                        </div>
+                    </div>
+                    
+                    <button class="download-btn" id="word-download-btn"><i class="fas fa-download"></i> Download PDF</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Middle Ad Unit -->
+        <div class="ad-container">
+            <!-- Google AdSense Ad Unit -->
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_PUBLISHER_ID"></script>
+            <!-- FileTools_Middle_Banner -->
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-YOUR_PUBLISHER_ID"
+                 data-ad-slot="YOUR_AD_SLOT_ID"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 File Tools Pro. All rights reserved.</p>
+            <p>Free online tools for file conversion, compression and optimization.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Tab functionality
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class from all buttons and tabs
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+                
+                // Add active class to clicked button and corresponding tab
+                btn.classList.add('active');
+                const tabId = btn.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Format bytes to human-readable format
+        function formatBytes(bytes, decimals = 2) {
+            if (bytes === 0) return '0 Bytes';
+            
+            const k = 1024;
+            const dm = decimals < 0 ? 0 : decimals;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        }
+
+        // Unit conversion functions
+        const unitConvertors = {
+            px: {
+                cm: (val, dpi = 96) => val * 2.54 / dpi,
+                mm: (val, dpi = 96) => val * 25.4 / dpi,
+                in: (val, dpi = 96) => val / dpi,
+                px: (val) => val
+            },
+            cm: {
+                px: (val, dpi = 96) => val * dpi / 2.54,
+                mm: (val) => val * 10,
+                in: (val) => val / 2.54,
+                cm: (val) => val
+            },
+            mm: {
+                px: (val, dpi = 96) => val * dpi / 25.4,
+                cm: (val) => val / 10,
+                in: (val) => val / 25.4,
+                mm: (val) => val
+            },
+            in: {
+                px: (val, dpi = 96) => val * dpi,
+                cm: (val) => val * 2.54,
+                mm: (val) => val * 25.4,
+                in: (val) => val
+            }
+        };
+
+        // Image Compress Tool
+        const compressUploadArea = document.getElementById('compress-upload-area');
+        const compressInput = document.getElementById('compress-input');
+        const compressFileInfo = document.getElementById('compress-file-info');
+        const compressFileName = document.getElementById('compress-file-name');
+        const compressFileSize = document.getElementById('compress-file-size');
+        const compressDimensions = document.getElementById('compress-dimensions');
+        const compressLevel = document.getElementById('compress-level');
+        const compressValue = document.getElementById('compress-value');
+        const compressFormat = document.getElementById('compress-format');
+        const compressBtn = document.getElementById('compress-btn');
+        const compressSpinner = document.getElementById('compress-spinner');
+        const compressResult = document.getElementById('compress-result');
+        const compressOriginalSize = document.getElementById('compress-original-size');
+        const compressNewSize = document.getElementById('compress-new-size');
+        const compressReduction = document.getElementById('compress-reduction');
+        const compressOriginalImg = document.getElementById('compress-original-img');
+        const compressNewImg = document.getElementById('compress-new-img');
+        const compressDownloadBtn = document.getElementById('compress-download-btn');
+
+        let compressFile = null;
+        let compressResultBlob = null;
+        let originalWidth = 0;
+        let originalHeight = 0;
+
+        // Update compression level value display
+        compressLevel.addEventListener('input', () => {
+            compressValue.textContent = `${compressLevel.value}%`;
+        });
+
+        // Handle file selection for compression
+        compressUploadArea.addEventListener('click', () => compressInput.click());
+        compressInput.addEventListener('change', handleCompressFileSelect);
+        
+        // Handle drag and drop for compression
+        compressUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            compressUploadArea.classList.add('active');
+        });
+        
+        compressUploadArea.addEventListener('dragleave', () => {
+            compressUploadArea.classList.remove('active');
+        });
+        
+        compressUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            compressUploadArea.classList.remove('active');
+            if (e.dataTransfer.files.length) {
+                compressInput.files = e.dataTransfer.files;
+                handleCompressFileSelect();
+            }
+        });
+        
+        function handleCompressFileSelect() {
+            if (compressInput.files.length) {
+                compressFile = compressInput.files[0];
+                
+                // Display file info
+                compressFileName.textContent = compressFile.name;
+                compressFileSize.textContent = formatBytes(compressFile.size);
+                compressFileInfo.style.display = 'block';
+                
+                // Preview original image and get dimensions
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.src = e.target.result;
+                    
+                    img.onload = () => {
+                        originalWidth = img.width;
+                        originalHeight = img.height;
+                        compressDimensions.textContent = `${originalWidth} × ${originalHeight} px`;
+                        
+                        // Show original image preview
+                        compressOriginalImg.src = e.target.result;
+                        
+                        // Enable compress button
+                        compressBtn.disabled = false;
+                    };
+                };
+                reader.readAsDataURL(compressFile);
+            }
+        }
+        
+        // Handle image compression
+        compressBtn.addEventListener('click', async () => {
+            if (!compressFile) return;
+            
+            // Show loading spinner
+            compressSpinner.style.display = 'block';
+            compressBtn.disabled = true;
+            
+            // Get quality level (convert from 0-100 to 0-1 for canvas)
+            const quality = compressLevel.value / 100;
+            
+            // Get output format
+            let format = compressFormat.value;
+            if (format === 'auto') {
+                format = compressFile.type.split('/')[1] || 'jpeg';
+            }
+            
+            // Create canvas and compress image
+            const img = new Image();
+            img.src = URL.createObjectURL(compressFile);
+            
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // Set canvas dimensions
+                canvas.width = img.width;
+                canvas.height = img.height;
+                
+                // Draw image on canvas
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                
+                // Convert to blob with specified quality
+                canvas.toBlob((blob) => {
+                    // Hide spinner
+                    compressSpinner.style.display = 'none';
+                    compressBtn.disabled = false;
+                    
+                    // Display results
+                    compressResultBlob = blob;
+                    compressOriginalSize.textContent = formatBytes(compressFile.size);
+                    compressNewSize.textContent = formatBytes(blob.size);
+                    
+                    const reduction = ((compressFile.size - blob.size) / compressFile.size * 100).toFixed(2);
+                    compressReduction.textContent = `${reduction}%`;
+                    
+                    // Preview compressed image
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        compressNewImg.src = e.target.result;
+                    };
+                    reader.readAsDataURL(blob);
+                    
+                    // Show result container
+                    compressResult.style.display = 'block';
+                }, `image/${format}`, quality);
+            };
+            
+            img.onerror = () => {
+                compressSpinner.style.display = 'none';
+                compressBtn.disabled = false;
+                alert('Error loading image. Please try another file.');
+            };
+        });
+        
+        // Handle download of compressed image
+        compressDownloadBtn.addEventListener('click', () => {
+            if (!compressResultBlob) return;
+            
+            let extension = compressFormat.value;
+            if (extension === 'auto') {
+                extension = compressFile.name.split('.').pop() || 'jpg';
+            }
+            
+            const newFileName = compressFile.name.replace(/\.[^/.]+$/, '') + `_compressed.${extension}`;
+            saveAs(compressResultBlob, newFileName);
+        });
+
+        // Image Resize Tool
+        const resizeUploadArea = document.getElementById('resize-upload-area');
+        const resizeInput = document.getElementById('resize-input');
+        const resizeFileInfo = document.getElementById('resize-file-info');
+        const resizeFileName = document.getElementById('resize-file-name');
+        const resizeFileSize = document.getElementById('resize-file-size');
+        const resizeDimensions = document.getElementById('resize-dimensions');
+        const resizeWidth = document.getElementById('resize-width');
+        const resizeHeight = document.getElementById('resize-height');
+        const resizeFormat = document.getElementById('resize-format');
+        const resizeMaintainRatio = document.getElementById('resize-maintain-ratio');
+        const resizeBtn = document.getElementById('resize-btn');
+        const resizeSpinner = document.getElementById('resize-spinner');
+        const resizeResult = document.getElementById('resize-result');
+        const resizeOriginalSize = document.getElementById('resize-original-size');
+        const resizeNewSize = document.getElementById('resize-new-size');
+        const resizeNewDimensions = document.getElementById('resize-new-dimensions');
+        const resizeOriginalImg = document.getElementById('resize-original-img');
+        const resizeNewImg = document.getElementById('resize-new-img');
+        const resizeDownloadBtn = document.getElementById('resize-download-btn');
+        const unitButtons = document.querySelectorAll('.unit-selector .unit-btn');
+
+        let resizeFile = null;
+        let resizeResultBlob = null;
+        let currentUnit = 'px';
+        let originalResizeWidth = 0;
+        let originalResizeHeight = 0;
+
+        // Handle unit selection
+        unitButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Skip if already active
+                if (button.classList.contains('active')) return;
+                
+                // Update active button
+                unitButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                // Get new unit
+                const newUnit = button.dataset.unit;
+                
+                // Convert current values to new unit
+                if (resizeWidth.value && resizeHeight.value) {
+                    const currentWidth = parseFloat(resizeWidth.value);
+                    const currentHeight = parseFloat(resizeHeight.value);
+                    
+                    // Convert to pixels first (if not already px)
+                    let widthInPx = currentWidth;
+                    let heightInPx = currentHeight;
+                    
+                    if (currentUnit !== 'px') {
+                        widthInPx = unitConvertors[currentUnit].px(currentWidth);
+                        heightInPx = unitConvertors[currentUnit].px(currentHeight);
+                    }
+                    
+                    // Convert to new unit
+                    const newWidth = unitConvertors.px[newUnit](widthInPx);
+                    const newHeight = unitConvertors.px[newUnit](heightInPx);
+                    
+                    // Update inputs
+                    resizeWidth.value = Math.round(newWidth);
+                    resizeHeight.value = Math.round(newHeight);
+                }
+                
+                // Update dimension units
+                document.querySelectorAll('.dimension-unit').forEach(unit => {
+                    unit.textContent = newUnit;
+                });
+                
+                // Update current unit
+                currentUnit = newUnit;
+            });
+        });
+
+        // Handle file selection for resizing
+        resizeUploadArea.addEventListener('click', () => resizeInput.click());
+        resizeInput.addEventListener('change', handleResizeFileSelect);
+        
+        // Handle drag and drop for resizing
+        resizeUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            resizeUploadArea.classList.add('active');
+        });
+        
+        resizeUploadArea.addEventListener('dragleave', () => {
+            resizeUploadArea.classList.remove('active');
+        });
+        
+        resizeUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            resizeUploadArea.classList.remove('active');
+            if (e.dataTransfer.files.length) {
+                resizeInput.files = e.dataTransfer.files;
+                handleResizeFileSelect();
+            }
+        });
+        
+        function handleResizeFileSelect() {
+            if (resizeInput.files.length) {
+                resizeFile = resizeInput.files[0];
+                
+                // Display file info
+                resizeFileName.textContent = resizeFile.name;
+                resizeFileSize.textContent = formatBytes(resizeFile.size);
+                resizeFileInfo.style.display = 'block';
+                
+                // Preview original image and get dimensions
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.src = e.target.result;
+                    
+                    img.onload = () => {
+                        originalResizeWidth = img.width;
+                        originalResizeHeight = img.height;
+                        resizeDimensions.textContent = `${originalResizeWidth} × ${originalResizeHeight} px`;
+                        
+                        // Set default width/height inputs
+                        resizeWidth.value = originalResizeWidth;
+                        resizeHeight.value = originalResizeHeight;
+                        
+                        // Show original image preview
+                        resizeOriginalImg.src = e.target.result;
+                        
+                        // Enable resize button
+                        resizeBtn.disabled = false;
+                    };
+                };
+                reader.readAsDataURL(resizeFile);
+            }
+        }
+        
+        // Handle aspect ratio maintenance
+        resizeMaintainRatio.addEventListener('change', () => {
+            if (!resizeMaintainRatio.checked) return;
+            if (!originalResizeWidth || !originalResizeHeight) return;
+            
+            // If width changed, adjust height
+            if (document.activeElement === resizeWidth && resizeWidth.value) {
+                const newWidth = parseFloat(resizeWidth.value);
+                const newHeight = Math.round((newWidth / originalResizeWidth) * originalResizeHeight);
+                resizeHeight.value = newHeight;
+            }
+            // If height changed, adjust width
+            else if (document.activeElement === resizeHeight && resizeHeight.value) {
+                const newHeight = parseFloat(resizeHeight.value);
+                const newWidth = Math.round((newHeight / originalResizeHeight) * originalResizeWidth);
+                resizeWidth.value = newWidth;
+            }
+        });
+        
+        // Handle image resizing
+        resizeBtn.addEventListener('click', async () => {
+            if (!resizeFile) return;
+            
+            // Show loading spinner
+            resizeSpinner.style.display = 'block';
+            resizeBtn.disabled = true;
+            
+            // Get output format
+            let format = resizeFormat.value;
+            if (format === 'auto') {
+                format = resizeFile.type.split('/')[1] || 'jpeg';
+            }
+            
+            // Get target dimensions (convert to pixels if needed)
+            let targetWidth = parseFloat(resizeWidth.value) || originalResizeWidth;
+            let targetHeight = parseFloat(resizeHeight.value) || originalResizeHeight;
+            
+            // Convert from current unit to pixels if needed
+            if (currentUnit !== 'px') {
+                targetWidth = unitConvertors[currentUnit].px(targetWidth);
+                targetHeight = unitConvertors[currentUnit].px(targetHeight);
+            }
+            
+            // Round to nearest integer
+            targetWidth = Math.round(targetWidth);
+            targetHeight = Math.round(targetHeight);
+            
+            // Maintain aspect ratio if needed
+            if (resizeMaintainRatio.checked) {
+                const ratio = originalResizeWidth / originalResizeHeight;
+                if (document.activeElement === resizeWidth) {
+                    targetHeight = Math.round(targetWidth / ratio);
+                    resizeHeight.value = unitConvertors.px[currentUnit](targetHeight);
+                } else {
+                    targetWidth = Math.round(targetHeight * ratio);
+                    resizeWidth.value = unitConvertors.px[currentUnit](targetWidth);
+                }
+            }
+            
+            // Create canvas and resize image
+            const img = new Image();
+            img.src = URL.createObjectURL(resizeFile);
+            
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // Set canvas dimensions
+                canvas.width = targetWidth;
+                canvas.height = targetHeight;
+                
+                // Draw resized image
+                ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+                
+                // Convert to blob
+                canvas.toBlob((blob) => {
+                    // Hide spinner
+                    resizeSpinner.style.display = 'none';
+                    resizeBtn.disabled = false;
+                    
+                    // Display results
+                    resizeResultBlob = blob;
+                    resizeOriginalSize.textContent = formatBytes(resizeFile.size);
+                    resizeNewSize.textContent = formatBytes(blob.size);
+                    resizeNewDimensions.textContent = `${targetWidth} × ${targetHeight} px`;
+                    
+                    // Preview resized image
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        resizeNewImg.src = e.target.result;
+                    };
+                    reader.readAsDataURL(blob);
+                    
+                    // Show result container
+                    resizeResult.style.display = 'block';
+                }, `image/${format}`, 0.9); // Use 90% quality for resized images
+            };
+            
+            img.onerror = () => {
+                resizeSpinner.style.display = 'none';
+                resizeBtn.disabled = false;
+                alert('Error loading image. Please try another file.');
+            };
+        });
+        
+        // Handle download of resized image
+        resizeDownloadBtn.addEventListener('click', () => {
+            if (!resizeResultBlob) return;
+            
+            let extension = resizeFormat.value;
+            if (extension === 'auto') {
+                extension = resizeFile.name.split('.').pop() || 'jpg';
+            }
+            
+            const newFileName = resizeFile.name.replace(/\.[^/.]+$/, '') + `_resized.${extension}`;
+            saveAs(resizeResultBlob, newFileName);
+        });
+
+        // Image to PDF Tool
+        const pdfUploadArea = document.getElementById('pdf-upload-area');
+        const pdfInput = document.getElementById('pdf-input');
+        const pdfFileInfo = document.getElementById('pdf-file-info');
+        const pdfFileCount = document.getElementById('pdf-file-count');
+        const pdfTotalSize = document.getElementById('pdf-total-size');
+        const pdfPageSize = document.getElementById('pdf-page-size');
+        const pdfOrientation = document.getElementById('pdf-orientation');
+        const pdfMargin = document.getElementById('pdf-margin');
+        const pdfBtn = document.getElementById('pdf-btn');
+        const pdfSpinner = document.getElementById('pdf-spinner');
+        const pdfResult = document.getElementById('pdf-result');
+        const pdfImageCount = document.getElementById('pdf-image-count');
+        const pdfPageCount = document.getElementById('pdf-page-count');
+        const pdfOutputSize = document.getElementById('pdf-output-size');
+        const pdfPreviewImg = document.getElementById('pdf-preview-img');
+        const pdfDownloadBtn = document.getElementById('pdf-download-btn');
+
+        let pdfFiles = [];
+        let pdfResultBlob = null;
+
+        // Handle file selection for PDF conversion
+        pdfUploadArea.addEventListener('click', () => pdfInput.click());
+        pdfInput.addEventListener('change', handlePdfFileSelect);
+        
+        // Handle drag and drop for PDF conversion
+        pdfUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            pdfUploadArea.classList.add('active');
+        });
+        
+        pdfUploadArea.addEventListener('dragleave', () => {
+            pdfUploadArea.classList.remove('active');
+        });
+        
+        pdfUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            pdfUploadArea.classList.remove('active');
+            if (e.dataTransfer.files.length) {
+                pdfInput.files = e.dataTransfer.files;
+                handlePdfFileSelect();
+            }
+        });
+        
+        function handlePdfFileSelect() {
+            if (pdfInput.files.length) {
+                pdfFiles = Array.from(pdfInput.files);
+                
+                // Display file info
+                pdfFileCount.textContent = pdfFiles.length;
+                
+                let totalSize = 0;
+                pdfFiles.forEach(file => {
+                    totalSize += file.size;
+                });
+                pdfTotalSize.textContent = formatBytes(totalSize);
+                pdfFileInfo.style.display = 'block';
+                
+                // Preview first image
+                if (pdfFiles.length > 0) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        pdfPreviewImg.src = e.target.result;
+                    };
+                    reader.readAsDataURL(pdfFiles[0]);
+                }
+                
+                // Enable PDF button
+                pdfBtn.disabled = false;
+            }
+        }
+        
+        // Handle PDF conversion
+        pdfBtn.addEventListener('click', async () => {
+            if (pdfFiles.length === 0) return;
+            
+            // Show loading spinner
+            pdfSpinner.style.display = 'block';
+            pdfBtn.disabled = true;
+            
+            try {
+                // Create a new PDF document
+                const { PDFDocument, rgb } = PDFLib;
+                const pdfDoc = await PDFDocument.create();
+                
+                // Process each image
+                for (const file of pdfFiles) {
+                    // Convert image to JPEG data URL (for simplicity)
+                    const imgDataUrl = await new Promise((resolve) => {
+                        const reader = new FileReader();
+                        reader.onload = (e) => resolve(e.target.result);
+                        reader.readAsDataURL(file);
+                    });
+                    
+                    // Create image element to get dimensions
+                    const img = new Image();
+                    img.src = imgDataUrl;
+                    await new Promise((resolve) => {
+                        img.onload = resolve;
+                    });
+                    
+                    // Determine page size
+                    let pageWidth, pageHeight;
+                    switch (pdfPageSize.value) {
+                        case 'a4':
+                            pageWidth = 595.28; // A4 width in points (1/72 inch)
+                            pageHeight = 841.89; // A4 height
+                            break;
+                        case 'letter':
+                            pageWidth = 612;
+                            pageHeight = 792;
+                            break;
+                        case 'legal':
+                            pageWidth = 612;
+                            pageHeight = 1008;
+                            break;
+                        case 'auto':
+                        default:
+                            // Use image dimensions (converted from pixels to points)
+                            pageWidth = img.width * 0.75;
+                            pageHeight = img.height * 0.75;
+                            break;
+                    }
+                    
+                    // Adjust for orientation
+                    if (pdfOrientation.value === 'landscape' && pdfPageSize.value !== 'auto') {
+                        [pageWidth, pageHeight] = [pageHeight, pageWidth];
+                    } else if (pdfOrientation.value === 'auto' && img.width > img.height && pdfPageSize.value !== 'auto') {
+                        [pageWidth, pageHeight] = [pageHeight, pageWidth];
+                    }
+                    
+                    // Add a new page
+                    const page = pdfDoc.addPage([pageWidth, pageHeight]);
+                    
+                    // Calculate image dimensions on page
+                    let imgWidth = img.width * 0.75; // Convert pixels to points
+                    let imgHeight = img.height * 0.75;
+                    
+                    // Scale to fit page with margins if needed
+                    const margin = pdfMargin.checked ? 36 : 0; // 0.5 inch margins
+                    const maxWidth = pageWidth - (margin * 2);
+                    const maxHeight = pageHeight - (margin * 2);
+                    
+                    if (imgWidth > maxWidth || imgHeight > maxHeight) {
+                        const scale = Math.min(maxWidth / imgWidth, maxHeight / imgHeight);
+                        imgWidth *= scale;
+                        imgHeight *= scale;
+                    }
+                    
+                    // Center image on page
+                    const x = margin + (maxWidth - imgWidth) / 2;
+                    const y = margin + (maxHeight - imgHeight) / 2;
+                    
+                    // Embed the image in the PDF
+                    let image;
+                    if (file.type === 'image/jpeg' || file.type === 'image/jpg') {
+                        const jpgBytes = await fetch(imgDataUrl).then(res => res.arrayBuffer());
+                        image = await pdfDoc.embedJpg(jpgBytes);
+                    } else if (file.type === 'image/png') {
+                        const pngBytes = await fetch(imgDataUrl).then(res => res.arrayBuffer());
+                        image = await pdfDoc.embedPng(pngBytes);
+                    } else {
+                        // For other formats, convert to JPEG
+                        const jpegDataUrl = await new Promise((resolve) => {
+                            const canvas = document.createElement('canvas');
+                            canvas.width = img.width;
+                            canvas.height = img.height;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0);
+                            resolve(canvas.toDataURL('image/jpeg', 0.9));
+                        });
+                        const jpgBytes = await fetch(jpegDataUrl).then(res => res.arrayBuffer());
+                        image = await pdfDoc.embedJpg(jpgBytes);
+                    }
+                    
+                    // Draw the image on the page
+                    page.drawImage(image, {
+                        x,
+                        y,
+                        width: imgWidth,
+                        height: imgHeight,
+                    });
+                }
+                
+                // Save the PDF
+                const pdfBytes = await pdfDoc.save();
+                pdfResultBlob = new Blob([pdfBytes], { type: 'application/pdf' });
+                
+                // Hide spinner
+                pdfSpinner.style.display = 'none';
+                pdfBtn.disabled = false;
+                
+                // Display results
+                pdfImageCount.textContent = pdfFiles.length;
+                pdfPageCount.textContent = pdfDoc.getPageCount();
+                pdfOutputSize.textContent = formatBytes(pdfResultBlob.size);
+                
+                // Show result container
+                pdfResult.style.display = 'block';
+            } catch (error) {
+                console.error('PDF creation error:', error);
+                pdfSpinner.style.display = 'none';
+                pdfBtn.disabled = false;
+                alert('Error creating PDF. Please try again.');
+            }
+        });
+        
+        // Handle download of PDF
+        pdfDownloadBtn.addEventListener('click', () => {
+            if (!pdfResultBlob) return;
+            
+            const newFileName = 'converted_images.pdf';
+            saveAs(pdfResultBlob, newFileName);
+        });
+
+        // Word to PDF Tool
+        const wordUploadArea = document.getElementById('word-upload-area');
+        const wordInput = document.getElementById('word-input');
+        const wordFileInfo = document.getElementById('word-file-info');
+        const wordFileName = document.getElementById('word-file-name');
+        const wordFileSize = document.getElementById('word-file-size');
+        const wordBtn = document.getElementById('word-btn');
+        const wordSpinner = document.getElementById('word-spinner');
+        const wordResult = document.getElementById('word-result');
+        const wordOriginalSize = document.getElementById('word-original-size');
+        const wordPdfSize = document.getElementById('word-pdf-size');
+        const wordDownloadBtn = document.getElementById('word-download-btn');
+
+        let wordFile = null;
+        let wordResultBlob = null;
+
+        // Handle file selection for Word to PDF conversion
+        wordUploadArea.addEventListener('click', () => wordInput.click());
+        wordInput.addEventListener('change', handleWordFileSelect);
+        
+        // Handle drag and drop for Word conversion
+        wordUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            wordUploadArea.classList.add('active');
+        });
+        
+        wordUploadArea.addEventListener('dragleave', () => {
+            wordUploadArea.classList.remove('active');
+        });
+        
+        wordUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            wordUploadArea.classList.remove('active');
+            if (e.dataTransfer.files.length) {
+                wordInput.files = e.dataTransfer.files;
+                handleWordFileSelect();
+            }
+        });
+        
+        function handleWordFileSelect() {
+            if (wordInput.files.length) {
+                wordFile = wordInput.files[0];
+                
+                // Display file info
+                wordFileName.textContent = wordFile.name;
+                wordFileSize.textContent = formatBytes(wordFile.size);
+                wordFileInfo.style.display = 'block';
+                
+                // Enable Word to PDF button
+                wordBtn.disabled = false;
+            }
+        }
+        
+        // Handle Word to PDF conversion
+        wordBtn.addEventListener('click', async () => {
+            if (!wordFile) return;
+            
+            // Show loading spinner
+            wordSpinner.style.display = 'block';
+            wordBtn.disabled = true;
+            
+            try {
+                // Read the Word file
+                const arrayBuffer = await wordFile.arrayBuffer();
+                
+                // Convert Word to HTML using mammoth.js
+                const result = await mammoth.extractRawText({ arrayBuffer });
+                const text = result.value;
+                
+                // Create a new PDF document
+                const { PDFDocument, rgb } = PDFLib;
+                const pdfDoc = await PDFDocument.create();
+                
+                // Add a page
+                const page = pdfDoc.addPage([595.28, 841.89]); // A4 size
+                
+                // Draw the text on the page
+                const fontSize = 12;
+                const { width, height } = page.getSize();
+                const margin = 50;
+                
+                page.drawText(text, {
+                    x: margin,
+                    y: height - margin - fontSize,
+                    size: fontSize,
+                    color: rgb(0, 0, 0),
+                    maxWidth: width - margin * 2,
+                    lineHeight: fontSize * 1.2,
+                });
+                
+                // Save the PDF
+                const pdfBytes = await pdfDoc.save();
+                wordResultBlob = new Blob([pdfBytes], { type: 'application/pdf' });
+                
+                // Hide spinner
+                wordSpinner.style.display = 'none';
+                wordBtn.disabled = false;
+                
+                // Display results
+                wordOriginalSize.textContent = formatBytes(wordFile.size);
+                wordPdfSize.textContent = formatBytes(wordResultBlob.size);
+                
+                // Show result container
+                wordResult.style.display = 'block';
+            } catch (error) {
+                console.error('Word to PDF conversion error:', error);
+                wordSpinner.style.display = 'none';
+                wordBtn.disabled = false;
+                alert('Error converting Word to PDF. Please try again.');
+            }
+        });
+        
+        // Handle download of PDF
+        wordDownloadBtn.addEventListener('click', () => {
+            if (!wordResultBlob) return;
+            
+            const newFileName = wordFile.name.replace(/\.[^/.]+$/, '') + '.pdf';
+            saveAs(wordResultBlob, newFileName);
+        });
+    </script>
+</body>
+</html>
